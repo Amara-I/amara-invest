@@ -11,497 +11,414 @@ const C = {
   teal: "#14B8A6", purple: "#A855F7",
 };
 
-// ── DRAPEAUX ─────────────────────────────────────────────────────────────────
-const FLAGS = {
-  "Côte d\'Ivoire": "🇨🇮", "Sénégal": "🇸🇳", "Burkina Faso": "🇧🇫",
-  "Bénin": "🇧🇯", "Mali": "🇲🇱", "Niger": "🇳🇪", "Togo": "🇹🇬",
-  "Guinée-Bissau": "🇬🇼", "Kenya": "🇰🇪", "Nigeria": "🇳🇬",
-  "Ghana": "🇬🇭", "Afrique du Sud": "🇿🇦", "Maroc": "🇲🇦",
-  "Égypte": "🇪🇬", "Maurice": "🇲🇺",
-};
+// ── TYPES ─────────────────────────────────────────────────────────────────────
+interface Company {
+  ticker: string; name: string; country: string; sector: string;
+  flag: string; price: number; variation: number; volume: number;
+  mktcap: number; per: number; color: string; currency: string;
+}
 
-// ── COULEURS SECTEURS ─────────────────────────────────────────────────────────
-const SECTOR_COLORS = {
-  "Banques": "#2563eb", "Télécoms": "#db2777", "Énergie": "#dc2626",
-  "Industrie": "#7c3aed", "Distribution": "#d97706", "Transport": "#ea580c",
-  "Agriculture": "#16a34a", "Finance": "#0891b2", "Conso. Base": "#65A30D",
-  "Tech": "#0EA5E9", "Mines": "#92400e", "Santé": "#10B981",
-};
+interface Market {
+  id: string; name: string; fullName: string; flag: string;
+  color: string; currency: string; region: string;
+  companies: Company[];
+}
 
-// ── MARCHÉS ──────────────────────────────────────────────────────────────────
-const MARKETS = [
+// ── MARKET DATA ───────────────────────────────────────────────────────────────
+const MARKETS: Market[] = [
   {
-    id: "BRVM",
-    name: "BRVM",
-    fullName: "Bourse Régionale des Valeurs Mobilières",
-    country: "UEMOA",
-    flag: "🌍",
-    currency: "FCFA",
-    color: "#D4A843",
-    description: "8 pays — Abidjan, Côte d\'Ivoire",
+    id: "BRVM", name: "BRVM", fullName: "Bourse Régionale des Valeurs Mobilières",
+    flag: "🌍", color: "#D4A843", currency: "FCFA", region: "Afrique de l'Ouest",
+    companies: [
+      { ticker:"SNTS", name:"Sonatel", country:"Sénégal", sector:"Télécoms", flag:"🇸🇳", price:18500, variation:1.2, volume:8300, mktcap:1295, per:14.2, color:"#D4A843", currency:"FCFA" },
+      { ticker:"ETIT", name:"Ecobank CI", country:"Côte d'Ivoire", sector:"Banques", flag:"🇨🇮", price:4200, variation:0.8, volume:15420, mktcap:252, per:9.1, color:"#3B82F6", currency:"FCFA" },
+      { ticker:"SGBC", name:"Société Générale CI", country:"Côte d'Ivoire", sector:"Banques", flag:"🇨🇮", price:9800, variation:2.1, volume:3100, mktcap:196, per:10.5, color:"#22C55E", currency:"FCFA" },
+      { ticker:"BICC", name:"BICICI", country:"Côte d'Ivoire", sector:"Banques", flag:"🇨🇮", price:6700, variation:-0.5, volume:4200, mktcap:134, per:8.7, color:"#A855F7", currency:"FCFA" },
+      { ticker:"CBIBF", name:"Coris Bank BF", country:"Burkina Faso", sector:"Banques", flag:"🇧🇫", price:8200, variation:1.5, volume:2100, mktcap:164, per:11.2, color:"#14B8A6", currency:"FCFA" },
+      { ticker:"BOAB", name:"BOA Bénin", country:"Bénin", sector:"Banques", flag:"🇧🇯", price:5400, variation:0.3, volume:1800, mktcap:108, per:9.8, color:"#F97316", currency:"FCFA" },
+      { ticker:"BOAS", name:"BOA Sénégal", country:"Sénégal", sector:"Banques", flag:"🇸🇳", price:7500, variation:-1.2, volume:1200, mktcap:85, per:10.3, color:"#34D399", currency:"FCFA" },
+      { ticker:"PALC", name:"Palm CI", country:"Côte d'Ivoire", sector:"Agriculture", flag:"🇨🇮", price:7600, variation:0.5, volume:2100, mktcap:456, per:12.1, color:"#FB923C", currency:"FCFA" },
+      { ticker:"SAFC", name:"SAPH", country:"Côte d'Ivoire", sector:"Agriculture", flag:"🇨🇮", price:5200, variation:0.8, volume:1200, mktcap:312, per:11.8, color:"#FBBF24", currency:"FCFA" },
+      { ticker:"SIVC", name:"Air Liquide CI", country:"Côte d'Ivoire", sector:"Industrie", flag:"🇨🇮", price:3400, variation:0.3, volume:1200, mktcap:204, per:13.5, color:"#60A5FA", currency:"FCFA" },
+      { ticker:"ONECI", name:"Orange CI", country:"Côte d'Ivoire", sector:"Télécoms", flag:"🇨🇮", price:12300, variation:-1.3, volume:6700, mktcap:738, per:15.2, color:"#F97316", currency:"FCFA" },
+      { ticker:"NTLC", name:"Nestlé CI", country:"Côte d'Ivoire", sector:"Conso. Base", flag:"🇨🇮", price:13000, variation:0.6, volume:3200, mktcap:165, per:11.5, color:"#A78BFA", currency:"FCFA" },
+      { ticker:"TTLC", name:"Total CI", country:"Côte d'Ivoire", sector:"Énergie", flag:"🇨🇮", price:2200, variation:-0.8, volume:5400, mktcap:132, per:8.9, color:"#EF4444", currency:"FCFA" },
+      { ticker:"SCRC", name:"SUCRIVOIRE", country:"Côte d'Ivoire", sector:"Agriculture", flag:"🇨🇮", price:2900, variation:-1.2, volume:870, mktcap:174, per:9.2, color:"#10B981", currency:"FCFA" },
+      { ticker:"SOGC", name:"SOGB", country:"Côte d'Ivoire", sector:"Agriculture", flag:"🇨🇮", price:3800, variation:1.1, volume:1500, mktcap:228, per:10.4, color:"#6EE7B7", currency:"FCFA" },
+      { ticker:"STAC", name:"SETAO CI", country:"Côte d'Ivoire", sector:"Industrie", flag:"🇨🇮", price:1800, variation:0.2, volume:620, mktcap:54, per:7.8, color:"#93C5FD", currency:"FCFA" },
+    ]
   },
   {
-    id: "NSE",
-    name: "NSE Nigeria",
-    fullName: "Nigerian Stock Exchange",
-    country: "Nigeria",
-    flag: "🇳🇬",
-    currency: "NGN",
-    color: "#22C55E",
-    description: "Lagos, Nigeria",
+    id: "NSE_NG", name: "NGX", fullName: "Nigerian Exchange Group",
+    flag: "🇳🇬", color: "#22C55E", currency: "NGN", region: "Afrique de l'Ouest",
+    companies: [
+      { ticker:"DANGCEM", name:"Dangote Cement", country:"Nigeria", sector:"Industrie", flag:"🇳🇬", price:389, variation:2.3, volume:4200000, mktcap:6630, per:12.1, color:"#22C55E", currency:"NGN" },
+      { ticker:"MTNN", name:"MTN Nigeria", country:"Nigeria", sector:"Télécoms", flag:"🇳🇬", price:198, variation:-1.1, volume:3100000, mktcap:4034, per:14.8, color:"#F59E0B", currency:"NGN" },
+      { ticker:"AIRTELAFRI", name:"Airtel Africa", country:"Nigeria", sector:"Télécoms", flag:"🇳🇬", price:1480, variation:0.9, volume:890000, mktcap:5520, per:11.2, color:"#EF4444", currency:"NGN" },
+      { ticker:"GTCO", name:"Guaranty Trust", country:"Nigeria", sector:"Banques", flag:"🇳🇬", price:45, variation:1.8, volume:12000000, mktcap:1327, per:4.2, color:"#F97316", currency:"NGN" },
+      { ticker:"ZENITH", name:"Zenith Bank", country:"Nigeria", sector:"Banques", flag:"🇳🇬", price:38, variation:0.5, volume:8900000, mktcap:1193, per:3.8, color:"#3B82F6", currency:"NGN" },
+      { ticker:"ACCESS", name:"Access Holdings", country:"Nigeria", sector:"Banques", flag:"🇳🇬", price:19, variation:-0.3, volume:15000000, mktcap:681, per:3.1, color:"#A855F7", currency:"NGN" },
+      { ticker:"UBA", name:"United Bank Africa", country:"Nigeria", sector:"Banques", flag:"🇳🇬", price:22, variation:1.2, volume:9800000, mktcap:751, per:3.5, color:"#14B8A6", currency:"NGN" },
+      { ticker:"NESTLE_NG", name:"Nestlé Nigeria", country:"Nigeria", sector:"Conso. Base", flag:"🇳🇬", price:780, variation:-0.8, volume:210000, mktcap:621, per:18.2, color:"#FB923C", currency:"NGN" },
+      { ticker:"NB", name:"Nigerian Breweries", country:"Nigeria", sector:"Conso. Base", flag:"🇳🇬", price:28, variation:0.4, volume:1200000, mktcap:222, per:9.4, color:"#34D399", currency:"NGN" },
+      { ticker:"SEPLAT", name:"Seplat Energy", country:"Nigeria", sector:"Énergie", flag:"🇳🇬", price:3820, variation:3.1, volume:180000, mktcap:2163, per:8.7, color:"#FBBF24", currency:"NGN" },
+      { ticker:"OKOMU", name:"Okomu Oil Palm", country:"Nigeria", sector:"Agriculture", flag:"🇳🇬", price:348, variation:1.5, volume:320000, mktcap:332, per:10.2, color:"#6EE7B7", currency:"NGN" },
+      { ticker:"BUAFOODS", name:"BUA Foods", country:"Nigeria", sector:"Conso. Base", flag:"🇳🇬", price:430, variation:2.1, volume:1500000, mktcap:5160, per:22.3, color:"#C4B5FD", currency:"NGN" },
+    ]
   },
   {
-    id: "GSE",
-    name: "GSE Ghana",
-    fullName: "Ghana Stock Exchange",
-    country: "Ghana",
-    flag: "🇬🇭",
-    currency: "GHS",
-    color: "#EF4444",
-    description: "Accra, Ghana",
+    id: "GSE", name: "GSE", fullName: "Ghana Stock Exchange",
+    flag: "🇬🇭", color: "#EF4444", currency: "GHS", region: "Afrique de l'Ouest",
+    companies: [
+      { ticker:"MTNGH", name:"MTN Ghana", country:"Ghana", sector:"Télécoms", flag:"🇬🇭", price:3.8, variation:1.8, volume:2100000, mktcap:19200, per:13.2, color:"#F59E0B", currency:"GHS" },
+      { ticker:"GCB", name:"GCB Bank", country:"Ghana", sector:"Banques", flag:"🇬🇭", price:5.2, variation:0.6, volume:890000, mktcap:1248, per:4.8, color:"#22C55E", currency:"GHS" },
+      { ticker:"EGH", name:"Ecobank Ghana", country:"Ghana", sector:"Banques", flag:"🇬🇭", price:9.8, variation:-0.4, volume:450000, mktcap:1176, per:5.2, color:"#3B82F6", currency:"GHS" },
+      { ticker:"GOIL", name:"GOIL Company", country:"Ghana", sector:"Énergie", flag:"🇬🇭", price:2.1, variation:1.1, volume:680000, mktcap:504, per:11.4, color:"#EF4444", currency:"GHS" },
+      { ticker:"TOTAL_GH", name:"TotalEnergies GH", country:"Ghana", sector:"Énergie", flag:"🇬🇭", price:4.5, variation:-1.2, volume:320000, mktcap:450, per:9.8, color:"#F97316", currency:"GHS" },
+      { ticker:"GGBL", name:"Guinness Ghana", country:"Ghana", sector:"Conso. Base", flag:"🇬🇭", price:1.8, variation:0.3, volume:540000, mktcap:216, per:14.1, color:"#A855F7", currency:"GHS" },
+      { ticker:"CLYD", name:"Clydestone Ghana", country:"Ghana", sector:"Tech.", flag:"🇬🇭", price:0.08, variation:2.5, volume:1200000, mktcap:38, per:16.2, color:"#14B8A6", currency:"GHS" },
+      { ticker:"SCB_GH", name:"Standard Chartered GH", country:"Ghana", sector:"Banques", flag:"🇬🇭", price:18.5, variation:0.9, volume:210000, mktcap:4810, per:8.1, color:"#60A5FA", currency:"GHS" },
+      { ticker:"ACCESS_GH", name:"Access Bank Ghana", country:"Ghana", sector:"Banques", flag:"🇬🇭", price:3.4, variation:-0.6, volume:380000, mktcap:476, per:5.9, color:"#34D399", currency:"GHS" },
+      { ticker:"SOGEGH", name:"SociéGé Ghana", country:"Ghana", sector:"Banques", flag:"🇬🇭", price:0.95, variation:0.0, volume:920000, mktcap:247, per:6.3, color:"#FBBF24", currency:"GHS" },
+    ]
   },
   {
-    id: "NSE_KE",
-    name: "NSE Kenya",
-    fullName: "Nairobi Securities Exchange",
-    country: "Kenya",
-    flag: "🇰🇪",
-    currency: "KES",
-    color: "#3B82F6",
-    description: "Nairobi, Kenya",
+    id: "NSE_KE", name: "NSE KE", fullName: "Nairobi Securities Exchange",
+    flag: "🇰🇪", color: "#14B8A6", currency: "KES", region: "Afrique de l'Est",
+    companies: [
+      { ticker:"SCOM", name:"Safaricom", country:"Kenya", sector:"Télécoms", flag:"🇰🇪", price:18.5, variation:1.4, volume:12000000, mktcap:73908, per:16.8, color:"#22C55E", currency:"KES" },
+      { ticker:"EQTY", name:"Equity Group", country:"Kenya", sector:"Banques", flag:"🇰🇪", price:48.5, variation:0.8, volume:3200000, mktcap:18436, per:6.2, color:"#3B82F6", currency:"KES" },
+      { ticker:"KCB", name:"KCB Group", country:"Kenya", sector:"Banques", flag:"🇰🇪", price:42.0, variation:-0.5, volume:2800000, mktcap:13482, per:5.8, color:"#A855F7", currency:"KES" },
+      { ticker:"COOP", name:"Co-op Bank", country:"Kenya", sector:"Banques", flag:"🇰🇪", price:15.2, variation:0.7, volume:1900000, mktcap:8921, per:5.1, color:"#14B8A6", currency:"KES" },
+      { ticker:"EABL", name:"East African Breweries", country:"Kenya", sector:"Conso. Base", flag:"🇰🇪", price:130, variation:-1.8, volume:480000, mktcap:10296, per:19.4, color:"#F59E0B", currency:"KES" },
+      { ticker:"BAT_KE", name:"BAT Kenya", country:"Kenya", sector:"Conso. Base", flag:"🇰🇪", price:380, variation:0.5, volume:85000, mktcap:3002, per:7.8, color:"#EF4444", currency:"KES" },
+      { ticker:"KPLC", name:"Kenya Power", country:"Kenya", sector:"Énergie", flag:"🇰🇪", price:3.4, variation:2.9, volume:4500000, mktcap:1091, per:8.2, color:"#F97316", currency:"KES" },
+      { ticker:"NATION", name:"Nation Media Group", country:"Kenya", sector:"Médias", flag:"🇰🇪", price:22.0, variation:-0.9, volume:280000, mktcap:1738, per:11.3, color:"#FB923C", currency:"KES" },
+      { ticker:"CARB", name:"Carbacid", country:"Kenya", sector:"Industrie", flag:"🇰🇪", price:13.5, variation:1.1, volume:320000, mktcap:1067, per:12.1, color:"#34D399", currency:"KES" },
+      { ticker:"JUBILEE", name:"Jubilee Holdings", country:"Kenya", sector:"Assurances", flag:"🇰🇪", price:248, variation:0.4, volume:145000, mktcap:3822, per:9.4, color:"#FBBF24", currency:"KES" },
+      { ticker:"ABSA_KE", name:"Absa Kenya", country:"Kenya", sector:"Banques", flag:"🇰🇪", price:14.8, variation:-0.3, volume:1200000, mktcap:7982, per:6.8, color:"#60A5FA", currency:"KES" },
+    ]
   },
   {
-    id: "JSE",
-    name: "JSE Afrique du Sud",
-    fullName: "Johannesburg Stock Exchange",
-    country: "Afrique du Sud",
-    flag: "🇿🇦",
-    currency: "ZAR",
-    color: "#A855F7",
-    description: "Johannesburg — 1er marché africain",
-  },
+    id: "JSE", name: "JSE", fullName: "Johannesburg Stock Exchange",
+    flag: "🇿🇦", color: "#A855F7", currency: "ZAR", region: "Afrique du Sud",
+    companies: [
+      { ticker:"NPN", name:"Naspers", country:"Afrique du Sud", sector:"Tech.", flag:"🇿🇦", price:2850, variation:1.9, volume:890000, mktcap:1212000, per:24.1, color:"#A855F7", currency:"ZAR" },
+      { ticker:"PRX", name:"Prosus", country:"Afrique du Sud", sector:"Tech.", flag:"🇿🇦", price:890, variation:2.2, volume:1200000, mktcap:1485000, per:22.8, color:"#3B82F6", currency:"ZAR" },
+      { ticker:"BHG", name:"BHP Group", country:"Afrique du Sud", sector:"Mines", flag:"🇿🇦", price:470, variation:-0.6, volume:2100000, mktcap:2376000, per:12.4, color:"#EF4444", currency:"ZAR" },
+      { ticker:"AGL", name:"Anglo American", country:"Afrique du Sud", sector:"Mines", flag:"🇿🇦", price:520, variation:1.1, volume:1800000, mktcap:702000, per:10.8, color:"#D4A843", currency:"ZAR" },
+      { ticker:"SBK", name:"Standard Bank", country:"Afrique du Sud", sector:"Banques", flag:"🇿🇦", price:215, variation:0.7, volume:3200000, mktcap:338000, per:9.2, color:"#22C55E", currency:"ZAR" },
+      { ticker:"FSR", name:"FirstRand", country:"Afrique du Sud", sector:"Banques", flag:"🇿🇦", price:78, variation:0.3, volume:4500000, mktcap:426000, per:11.1, color:"#14B8A6", currency:"ZAR" },
+      { ticker:"MTN", name:"MTN Group", country:"Afrique du Sud", sector:"Télécoms", flag:"🇿🇦", price:82, variation:-1.4, volume:5800000, mktcap:150000, per:8.3, color:"#F59E0B", currency:"ZAR" },
+      { ticker:"VOD_ZA", name:"Vodacom", country:"Afrique du Sud", sector:"Télécoms", flag:"🇿🇦", price:110, variation:0.9, volume:2100000, mktcap:200000, per:13.6, color:"#EF4444", currency:"ZAR" },
+      { ticker:"SOL", name:"Sasol", country:"Afrique du Sud", sector:"Énergie", flag:"🇿🇦", price:165, variation:2.8, volume:3800000, mktcap:101000, per:7.4, color:"#F97316", currency:"ZAR" },
+      { ticker:"AMS", name:"Anglo Platinum", country:"Afrique du Sud", sector:"Mines", flag:"🇿🇦", price:680, variation:-0.8, volume:480000, mktcap:184000, per:9.8, color:"#A78BFA", currency:"ZAR" },
+      { ticker:"GFI", name:"Gold Fields", country:"Afrique du Sud", sector:"Mines", flag:"🇿🇦", price:285, variation:3.2, volume:2800000, mktcap:79000, per:16.2, color:"#FBBF24", currency:"ZAR" },
+      { ticker:"CPI", name:"Capitec Bank", country:"Afrique du Sud", sector:"Banques", flag:"🇿🇦", price:2700, variation:1.5, volume:320000, mktcap:319000, per:21.4, color:"#34D399", currency:"ZAR" },
+    ]
+  }
 ];
 
-// ── DONNÉES ENTREPRISES PAR MARCHÉ ───────────────────────────────────────────
-const ALL_COMPANIES = {
-  BRVM: [
-    // Banques
-    { ticker: "SNTS",  name: "Sonatel",              country: "Sénégal",       sector: "Télécoms",    prix: 18500, variation: -0.5, volume: 8300,  cap: 925, per: 14.2, color: "#F97316" },
-    { ticker: "ETIT",  name: "Ecobank CI",            country: "Côte d\'Ivoire", sector: "Banques",     prix: 4200,  variation: 1.2,  volume: 15420, cap: 252, per: 9.8,  color: "#3B82F6" },
-    { ticker: "SGBC",  name: "Société Générale CI",   country: "Côte d\'Ivoire", sector: "Banques",     prix: 9800,  variation: 0.8,  volume: 3100,  cap: 196, per: 10.5, color: "#60A5FA" },
-    { ticker: "CBIBF", name: "Coris Bank BF",         country: "Burkina Faso",  sector: "Banques",     prix: 8200,  variation: 1.5,  volume: 3400,  cap: 164, per: 8.3,  color: "#0EA5E9" },
-    { ticker: "BICC",  name: "BICICI",                country: "Côte d\'Ivoire", sector: "Banques",     prix: 6700,  variation: 2.1,  volume: 4200,  cap: 134, per: 11.2, color: "#38BDF8" },
-    { ticker: "BOAB",  name: "BOA Bénin",             country: "Bénin",         sector: "Banques",     prix: 5400,  variation: 0.3,  volume: 1800,  cap: 108, per: 7.9,  color: "#22D3EE" },
-    { ticker: "BOAC",  name: "BOA CI",                country: "Côte d\'Ivoire", sector: "Banques",     prix: 5100,  variation: 1.0,  volume: 2100,  cap: 102, per: 8.5,  color: "#2DD4BF" },
-    { ticker: "NSBC",  name: "NSIA Banque CI",        country: "Côte d\'Ivoire", sector: "Banques",     prix: 6800,  variation: 1.3,  volume: 2800,  cap: 136, per: 9.1,  color: "#4ADE80" },
-    { ticker: "SIBC",  name: "SIB CI",                country: "Côte d\'Ivoire", sector: "Banques",     prix: 4800,  variation: 1.8,  volume: 3100,  cap: 96,  per: 8.7,  color: "#86EFAC" },
-    { ticker: "ORGT",  name: "Oragroup Togo",         country: "Togo",          sector: "Banques",     prix: 5300,  variation: -0.8, volume: 1600,  cap: 106, per: 8.2,  color: "#FDE047" },
-    { ticker: "BOABF", name: "BOA Burkina Faso",      country: "Burkina Faso",  sector: "Banques",     prix: 4800,  variation: -0.5, volume: 1200,  cap: 96,  per: 7.8,  color: "#FB923C" },
-    { ticker: "BOAM",  name: "BOA Mali",              country: "Mali",          sector: "Banques",     prix: 4600,  variation: 0.6,  volume: 950,   cap: 92,  per: 7.5,  color: "#F87171" },
-    { ticker: "BOAS",  name: "BOA Sénégal",           country: "Sénégal",       sector: "Banques",     prix: 4900,  variation: 0.9,  volume: 1100,  cap: 98,  per: 8.0,  color: "#C084FC" },
-    { ticker: "BOAT",  name: "BOA Togo",              country: "Togo",          sector: "Banques",     prix: 4700,  variation: 0.4,  volume: 890,   cap: 94,  per: 7.6,  color: "#818CF8" },
-    { ticker: "BOAN",  name: "BOA Niger",             country: "Niger",         sector: "Banques",     prix: 4300,  variation: -0.2, volume: 780,   cap: 86,  per: 7.3,  color: "#6EE7B7" },
-    // Télécoms
-    { ticker: "ONECI", name: "Orange CI",             country: "Côte d\'Ivoire", sector: "Télécoms",    prix: 12300, variation: -1.3, volume: 6700,  cap: 615, per: 13.5, color: "#FB923C" },
-    // Agriculture
-    { ticker: "PALC",  name: "Palm CI",               country: "Côte d\'Ivoire", sector: "Agriculture", prix: 7600,  variation: 0.5,  volume: 2100,  cap: 115, per: 9.2,  color: "#65A30D" },
-    { ticker: "SAFC",  name: "SAPH",                  country: "Côte d\'Ivoire", sector: "Agriculture", prix: 5200,  variation: 0.8,  volume: 1200,  cap: 31,  per: 10.1, color: "#4ADE80" },
-    { ticker: "SOGC",  name: "SOGB",                  country: "Côte d\'Ivoire", sector: "Agriculture", prix: 3800,  variation: 1.1,  volume: 1500,  cap: 23,  per: 8.9,  color: "#86EFAC" },
-    { ticker: "SCRC",  name: "SUCRIVOIRE",            country: "Côte d\'Ivoire", sector: "Agriculture", prix: 2900,  variation: -1.2, volume: 870,   cap: 17,  per: 7.8,  color: "#A3E635" },
-    { ticker: "SIAC",  name: "SIAT CI",               country: "Côte d\'Ivoire", sector: "Agriculture", prix: 3600,  variation: 0.4,  volume: 650,   cap: 22,  per: 8.3,  color: "#BEF264" },
-    { ticker: "SICC",  name: "SICOR",                 country: "Côte d\'Ivoire", sector: "Agriculture", prix: 4200,  variation: -0.3, volume: 980,   cap: 25,  per: 9.0,  color: "#D9F99D" },
-    // Industrie
-    { ticker: "SIVC",  name: "Air Liquide CI",        country: "Côte d\'Ivoire", sector: "Industrie",   prix: 3400,  variation: 0.3,  volume: 1200,  cap: 68,  per: 11.0, color: "#A855F7" },
-    { ticker: "STAC",  name: "SITAB CI",              country: "Côte d\'Ivoire", sector: "Industrie",   prix: 5800,  variation: 1.6,  volume: 890,   cap: 116, per: 9.5,  color: "#C084FC" },
-    { ticker: "UNLC",  name: "UNILEVER CI",           country: "Côte d\'Ivoire", sector: "Industrie",   prix: 6200,  variation: -0.9, volume: 2100,  cap: 124, per: 10.8, color: "#D946EF" },
-    { ticker: "SOLC",  name: "SOLIBRA CI",            country: "Côte d\'Ivoire", sector: "Industrie",   prix: 95000, variation: 0.2,  volume: 340,   cap: 285, per: 12.3, color: "#E879F9" },
-    { ticker: "NEIC",  name: "NEI-CEDA CI",           country: "Côte d\'Ivoire", sector: "Industrie",   prix: 1850,  variation: -1.0, volume: 560,   cap: 37,  per: 8.2,  color: "#F0ABFC" },
-    // Distribution
-    { ticker: "CFAC",  name: "CFAO CI",               country: "Côte d\'Ivoire", sector: "Distribution",prix: 8500,  variation: 0.6,  volume: 2300,  cap: 170, per: 11.5, color: "#FCD34D" },
-    { ticker: "TTLC",  name: "TotalEnergies CI",      country: "Côte d\'Ivoire", sector: "Énergie",     prix: 1850,  variation: -0.7, volume: 5600,  cap: 37,  per: 9.2,  color: "#FDE68A" },
-    { ticker: "TTLS",  name: "TotalEnergies SN",      country: "Sénégal",       sector: "Énergie",     prix: 3100,  variation: 0.5,  volume: 3200,  cap: 42,  per: 8.8,  color: "#FEF3C7" },
-    { ticker: "CIEC",  name: "CIE CI",                country: "Côte d\'Ivoire", sector: "Énergie",     prix: 2450,  variation: 0.3,  volume: 4100,  cap: 49,  per: 7.6,  color: "#FCA5A5" },
-    // Transport
-    { ticker: "AVOC",  name: "Air Côte d\'Ivoire",    country: "Côte d\'Ivoire", sector: "Transport",   prix: 1650,  variation: 2.3,  volume: 4500,  cap: 33,  per: 10.0, color: "#FDBA74" },
-    { ticker: "SDSC",  name: "Africa Global Log.",    country: "Côte d\'Ivoire", sector: "Transport",   prix: 1550,  variation: 0.8,  volume: 1200,  cap: 24,  per: 5.4,  color: "#F87171" },
-  ],
-
-  NSE: [
-    { ticker: "DANGCEM",  name: "Dangote Cement",     country: "Nigeria", sector: "Industrie",   prix: 4250,  variation: 1.8,  volume: 950000,  cap: 7240, per: 11.2, color: "#F97316" },
-    { ticker: "MTNN",     name: "MTN Nigeria",        country: "Nigeria", sector: "Télécoms",    prix: 198,   variation: -0.6, volume: 2100000, cap: 4020, per: 13.8, color: "#FCD34D" },
-    { ticker: "AIRTELAFRI",name:"Airtel Africa",      country: "Nigeria", sector: "Télécoms",    prix: 1450,  variation: 0.9,  volume: 520000,  cap: 2900, per: 12.1, color: "#FB923C" },
-    { ticker: "ZENITHBANK",name:"Zenith Bank",        country: "Nigeria", sector: "Banques",     prix: 36,    variation: 2.3,  volume: 8500000, cap: 1130, per: 3.2,  color: "#3B82F6" },
-    { ticker: "GTCO",     name: "Guaranty Trust",    country: "Nigeria", sector: "Banques",     prix: 52,    variation: 1.5,  volume: 6200000, cap: 1540, per: 4.1,  color: "#60A5FA" },
-    { ticker: "ACCESSCORP",name:"Access Holdings",   country: "Nigeria", sector: "Banques",     prix: 20,    variation: -0.5, volume: 9800000, cap: 712,  per: 3.8,  color: "#38BDF8" },
-    { ticker: "UBA",      name: "United Bank Africa",country: "Nigeria", sector: "Banques",     prix: 24,    variation: 1.2,  volume: 7300000, cap: 820,  per: 3.5,  color: "#22D3EE" },
-    { ticker: "NESTLE",   name: "Nestlé Nigeria",    country: "Nigeria", sector: "Conso. Base", prix: 1400,  variation: 0.4,  volume: 180000,  cap: 1110, per: 18.5, color: "#4ADE80" },
-    { ticker: "SEPLAT",   name: "Seplat Energy",     country: "Nigeria", sector: "Énergie",     prix: 4100,  variation: 2.1,  volume: 420000,  cap: 2400, per: 7.8,  color: "#EF4444" },
-    { ticker: "NB",       name: "Nigerian Breweries",country: "Nigeria", sector: "Conso. Base", prix: 24,    variation: -1.2, volume: 1200000, cap: 380,  per: 14.2, color: "#A855F7" },
-    { ticker: "BUACEMENT",name: "BUA Cement",        country: "Nigeria", sector: "Industrie",   prix: 65,    variation: 0.8,  volume: 950000,  cap: 2210, per: 10.3, color: "#D946EF" },
-    { ticker: "FIDELITYBK",name:"Fidelity Bank",     country: "Nigeria", sector: "Banques",     prix: 13,    variation: 3.1,  volume: 5600000, cap: 415,  per: 2.9,  color: "#818CF8" },
-    { ticker: "STANBIC",  name: "Stanbic IBTC",      country: "Nigeria", sector: "Banques",     prix: 62,    variation: 0.7,  volume: 840000,  cap: 695,  per: 5.6,  color: "#6EE7B7" },
-    { ticker: "OKOMUOIL", name: "Okomu Oil Palm",    country: "Nigeria", sector: "Agriculture", prix: 370,   variation: 1.4,  volume: 320000,  cap: 350,  per: 8.9,  color: "#65A30D" },
-    { ticker: "PRESCO",   name: "Presco Plc",        country: "Nigeria", sector: "Agriculture", prix: 320,   variation: -0.3, volume: 280000,  cap: 320,  per: 9.2,  color: "#86EFAC" },
-  ],
-
-  GSE: [
-    { ticker: "MTNGH",  name: "MTN Ghana",           country: "Ghana", sector: "Télécoms",    prix: 2.1,   variation: 1.2,  volume: 3200000, cap: 2650, per: 11.8, color: "#FCD34D" },
-    { ticker: "TOTAL",  name: "TotalEnergies GH",   country: "Ghana", sector: "Énergie",     prix: 8.4,   variation: 0.6,  volume: 420000,  cap: 380,  per: 9.2,  color: "#EF4444" },
-    { ticker: "GCB",    name: "GCB Bank",            country: "Ghana", sector: "Banques",     prix: 5.2,   variation: 2.1,  volume: 1800000, cap: 640,  per: 5.8,  color: "#3B82F6" },
-    { ticker: "ECOBANK",name: "Ecobank Ghana",       country: "Ghana", sector: "Banques",     prix: 11.5,  variation: -0.4, volume: 950000,  cap: 1420, per: 6.2,  color: "#60A5FA" },
-    { ticker: "SCBGH",  name: "Standard Chartered GH",country:"Ghana", sector: "Banques",     prix: 24.8,  variation: 0.9,  volume: 380000,  cap: 980,  per: 8.4,  color: "#38BDF8" },
-    { ticker: "GOIL",   name: "GOIL",                country: "Ghana", sector: "Énergie",     prix: 1.98,  variation: 1.5,  volume: 2100000, cap: 245,  per: 7.3,  color: "#FCA5A5" },
-    { ticker: "AYRTN",  name: "Ayrton Drugs",        country: "Ghana", sector: "Santé",       prix: 0.42,  variation: -0.8, volume: 880000,  cap: 52,   per: 12.1, color: "#10B981" },
-    { ticker: "CAL",    name: "CAL Bank",            country: "Ghana", sector: "Banques",     prix: 0.75,  variation: 3.2,  volume: 4200000, cap: 93,   per: 4.2,  color: "#22D3EE" },
-    { ticker: "UNIL",   name: "Unilever Ghana",      country: "Ghana", sector: "Conso. Base", prix: 14.2,  variation: 0.3,  volume: 180000,  cap: 175,  per: 16.8, color: "#A855F7" },
-    { ticker: "BOPP",   name: "Benso Oil Palm",      country: "Ghana", sector: "Agriculture", prix: 9.8,   variation: 1.1,  volume: 210000,  cap: 121,  per: 10.2, color: "#65A30D" },
-  ],
-
-  NSE_KE: [
-    { ticker: "EQTY",   name: "Equity Group",        country: "Kenya", sector: "Banques",     prix: 42,    variation: 1.8,  volume: 3200000, cap: 1610, per: 6.8,  color: "#EF4444" },
-    { ticker: "KCB",    name: "KCB Group",           country: "Kenya", sector: "Banques",     prix: 38,    variation: -0.4, volume: 2800000, cap: 1220, per: 5.9,  color: "#3B82F6" },
-    { ticker: "SCOM",   name: "Safaricom",           country: "Kenya", sector: "Télécoms",    prix: 18,    variation: 0.6,  volume: 8900000, cap: 7200, per: 14.5, color: "#22C55E" },
-    { ticker: "BATK",   name: "BAT Kenya",           country: "Kenya", sector: "Conso. Base", prix: 410,   variation: 0.2,  volume: 85000,   cap: 1640, per: 11.2, color: "#D97706" },
-    { ticker: "EABL",   name: "E.Africa Breweries",  country: "Kenya", sector: "Conso. Base", prix: 148,   variation: -1.2, volume: 380000,  cap: 1180, per: 15.8, color: "#A855F7" },
-    { ticker: "ABSA",   name: "ABSA Kenya",          country: "Kenya", sector: "Banques",     prix: 13,    variation: 2.4,  volume: 1900000, cap: 707,  per: 6.1,  color: "#60A5FA" },
-    { ticker: "COOP",   name: "Co-op Bank Kenya",    country: "Kenya", sector: "Banques",     prix: 14,    variation: 0.8,  volume: 2100000, cap: 820,  per: 5.5,  color: "#38BDF8" },
-    { ticker: "NCBA",   name: "NCBA Group",          country: "Kenya", sector: "Banques",     prix: 43,    variation: 1.3,  volume: 980000,  cap: 695,  per: 5.2,  color: "#22D3EE" },
-    { ticker: "STANCHART",name:"Standard Chartered KE",country:"Kenya",sector: "Banques",     prix: 175,   variation: -0.6, volume: 210000,  cap: 658,  per: 7.8,  color: "#4ADE80" },
-    { ticker: "KENGEN", name: "KenGen",              country: "Kenya", sector: "Énergie",     prix: 3.9,   variation: 1.0,  volume: 3600000, cap: 316,  per: 8.4,  color: "#FCA5A5" },
-    { ticker: "KPLC",   name: "Kenya Power",         country: "Kenya", sector: "Énergie",     prix: 2.1,   variation: -2.1, volume: 5200000, cap: 170,  per: 6.2,  color: "#FB923C" },
-    { ticker: "CARB",   name: "Carbacid Invest.",    country: "Kenya", sector: "Industrie",   prix: 12,    variation: 0.5,  volume: 420000,  cap: 141,  per: 9.8,  color: "#C084FC" },
-  ],
-
-  JSE: [
-    { ticker: "NPN",    name: "Naspers",             country: "Afrique du Sud", sector: "Tech",        prix: 3520,  variation: 0.8,  volume: 1850000, cap: 140000, per: 22.5, color: "#A855F7" },
-    { ticker: "BHP",    name: "BHP Group",           country: "Afrique du Sud", sector: "Mines",       prix: 4680,  variation: -0.4, volume: 2100000, cap: 118000, per: 14.8, color: "#78716C" },
-    { ticker: "AGL",    name: "Anglo American",      country: "Afrique du Sud", sector: "Mines",       prix: 5820,  variation: 1.2,  volume: 1620000, cap: 78000,  per: 16.2, color: "#A8A29E" },
-    { ticker: "SOL",    name: "Sasol",               country: "Afrique du Sud", sector: "Énergie",     prix: 1420,  variation: -1.8, volume: 3200000, cap: 22800,  per: 8.5,  color: "#EF4444" },
-    { ticker: "MTN",    name: "MTN Group",           country: "Afrique du Sud", sector: "Télécoms",    prix: 108,   variation: 2.1,  volume: 5800000, cap: 19800,  per: 9.8,  color: "#FCD34D" },
-    { ticker: "FSR",    name: "FirstRand",           country: "Afrique du Sud", sector: "Banques",     prix: 78,    variation: 0.9,  volume: 4200000, cap: 43500,  per: 10.2, color: "#3B82F6" },
-    { ticker: "SBK",    name: "Standard Bank",       country: "Afrique du Sud", sector: "Banques",     prix: 210,   variation: 1.4,  volume: 2800000, cap: 33600,  per: 9.6,  color: "#60A5FA" },
-    { ticker: "ABG",    name: "Absa Group",          country: "Afrique du Sud", sector: "Banques",     prix: 185,   variation: -0.3, volume: 1900000, cap: 24200,  per: 8.8,  color: "#38BDF8" },
-    { ticker: "NED",    name: "Nedbank",             country: "Afrique du Sud", sector: "Banques",     prix: 268,   variation: 0.6,  volume: 1400000, cap: 13400,  per: 8.1,  color: "#22D3EE" },
-    { ticker: "TFG",    name: "The Foschini Group",  country: "Afrique du Sud", sector: "Distribution",prix: 128,   variation: 1.7,  volume: 980000,  cap: 15600,  per: 11.4, color: "#F97316" },
-    { ticker: "WHL",    name: "Woolworths",          country: "Afrique du Sud", sector: "Distribution",prix: 72,    variation: 0.3,  volume: 2100000, cap: 10800,  per: 13.2, color: "#FBBF24" },
-    { ticker: "SHP",    name: "Shoprite",            country: "Afrique du Sud", sector: "Distribution",prix: 248,   variation: 0.7,  volume: 1600000, cap: 40800,  per: 15.8, color: "#FDE68A" },
-    { ticker: "VOD",    name: "Vodacom",             country: "Afrique du Sud", sector: "Télécoms",    prix: 112,   variation: -0.8, volume: 2400000, cap: 30200,  per: 12.4, color: "#FB923C" },
-    { ticker: "AMS",    name: "Anglo Platinum",      country: "Afrique du Sud", sector: "Mines",       prix: 8420,  variation: 2.4,  volume: 420000,  cap: 24600,  per: 9.2,  color: "#D1D5DB" },
-    { ticker: "IMP",    name: "Impala Platinum",     country: "Afrique du Sud", sector: "Mines",       prix: 1380,  variation: -1.5, volume: 3800000, cap: 17500,  per: 8.6,  color: "#9CA3AF" },
-    { ticker: "GFI",    name: "Gold Fields",         country: "Afrique du Sud", sector: "Mines",       prix: 2480,  variation: 1.9,  volume: 2100000, cap: 34200,  per: 12.8, color: "#FCD34D" },
-  ],
-};
-
-// ── SIGNAL ────────────────────────────────────────────────────────────────────
-function getSignal(variation, per) {
-  const score = (variation > 2 ? 90 : variation > 0.5 ? 75 : variation > 0 ? 60 : variation > -1 ? 45 : 30)
-    + (per < 8 ? 10 : per < 12 ? 5 : 0);
-  if (score >= 85) return { label: "ACHAT FORT", color: "#22C55E" };
-  if (score >= 70) return { label: "ACHAT",      color: "#84CC16" };
-  if (score >= 55) return { label: "CONSERVER",  color: "#D4A843" };
-  if (score >= 40) return { label: "ALLÉGER",    color: "#F97316" };
-  return              { label: "VENDRE",         color: "#EF4444" };
+// ── SIGNAL CALCULATION ────────────────────────────────────────────────────────
+function getSignal(per: number, variation: number): { label: string; color: string } {
+  const score =
+    (variation > 2 ? 30 : variation > 0 ? 20 : variation > -1 ? 10 : 0) +
+    (per < 8 ? 30 : per < 12 ? 20 : per < 16 ? 10 : 5) +
+    Math.random() * 20;
+  if (score >= 60) return { label: "ACHAT FORT", color: C.green };
+  if (score >= 45) return { label: "ACHAT", color: "#84CC16" };
+  if (score >= 30) return { label: "CONSERVER", color: C.gold };
+  if (score >= 15) return { label: "ALLÉGER", color: "#F97316" };
+  return { label: "VENDRE", color: C.red };
 }
 
-// ── FORMAT CAP ────────────────────────────────────────────────────────────────
-function fmtCap(v) {
-  if (v >= 1000) return (v / 1000).toFixed(1) + " T";
-  return v + " Mds";
+function formatCap(val: number, currency: string): string {
+  if (val >= 1000) return `${(val / 1000).toFixed(1)}K Mds ${currency}`;
+  return `${val.toLocaleString("fr-FR")} Mds ${currency}`;
 }
 
-// ── MAIN ─────────────────────────────────────────────────────────────────────
-export default function BRVMDashboard() {
-  const [market,     setMarket]     = useState("BRVM");
-  const [search,     setSearch]     = useState("");
-  const [sector,     setSector]     = useState("Tous");
-  const [country,    setCountry]    = useState("Tous");
-  const [sortBy,     setSortBy]     = useState("cap");
-  const [sortDir,    setSortDir]    = useState("desc");
-  const [menuOpen,   setMenuOpen]   = useState(false);
+// ── MAIN COMPONENT ────────────────────────────────────────────────────────────
+export default function AfricaMarkets() {
+  const [activeMarket, setActiveMarket] = useState<string>("BRVM");
+  const [sectorFilter, setSectorFilter] = useState<string>("Tous");
+  const [countryFilter, setCountryFilter] = useState<string>("Tous");
+  const [sortCol, setSortCol] = useState<string>("mktcap");
+  const [sortAsc, setSortAsc] = useState<boolean>(false);
+  const [search, setSearch] = useState<string>("");
+  const [selectedTicker, setSelectedTicker] = useState<string | null>(null);
 
-  const companies = ALL_COMPANIES[market] || [];
-  const currentMarket = MARKETS.find(m => m.id === market);
+  const market = MARKETS.find(m => m.id === activeMarket)!;
 
-  const sectors  = ["Tous", ...Array.from(new Set(companies.map(c => c.sector))).sort()];
-  const countries = ["Tous", ...Array.from(new Set(companies.map(c => c.country))).sort()];
+  // Unique sectors & countries for current market
+  const sectors = ["Tous", ...Array.from(new Set(market.companies.map(c => c.sector)))];
+  const countries = ["Tous", ...Array.from(new Set(market.companies.map(c => c.country)))];
+  const showCountryFilter = countries.length > 2;
 
-  const handleSort = (col) => {
-    if (sortBy === col) setSortDir(d => d === "desc" ? "asc" : "desc");
-    else { setSortBy(col); setSortDir("desc"); }
-  };
-
-  const filtered = companies
+  // Filter + sort
+  const filtered = market.companies
     .filter(c =>
-      (sector  === "Tous" || c.sector  === sector)  &&
-      (country === "Tous" || c.country === country) &&
-      (c.name.toLowerCase().includes(search.toLowerCase()) ||
-       c.ticker.toLowerCase().includes(search.toLowerCase()))
+      (sectorFilter === "Tous" || c.sector === sectorFilter) &&
+      (countryFilter === "Tous" || c.country === countryFilter) &&
+      (c.name.toLowerCase().includes(search.toLowerCase()) || c.ticker.toLowerCase().includes(search.toLowerCase()))
     )
     .sort((a, b) => {
-      const v = sortDir === "desc" ? -1 : 1;
-      if (sortBy === "prix")      return v * (a.prix      - b.prix);
-      if (sortBy === "variation") return v * (a.variation - b.variation);
-      if (sortBy === "volume")    return v * (a.volume    - b.volume);
-      if (sortBy === "cap")       return v * (a.cap       - b.cap);
+      const mul = sortAsc ? 1 : -1;
+      if (sortCol === "price") return mul * (a.price - b.price);
+      if (sortCol === "variation") return mul * (a.variation - b.variation);
+      if (sortCol === "volume") return mul * (a.volume - b.volume);
+      if (sortCol === "mktcap") return mul * (a.mktcap - b.mktcap);
+      if (sortCol === "per") return mul * (a.per - b.per);
       return 0;
     });
 
-  const totalCap   = companies.reduce((a, b) => a + b.cap, 0);
-  const hausse     = companies.filter(c => c.variation > 0).length;
-  const baisse     = companies.filter(c => c.variation < 0).length;
-  const avgVar     = (companies.reduce((a,b)=>a+b.variation,0)/companies.length).toFixed(2);
+  const handleSort = (col: string) => {
+    if (sortCol === col) setSortAsc(!sortAsc);
+    else { setSortCol(col); setSortAsc(false); }
+  };
 
-  const SortTh = ({ col, label }) => (
-    <th onClick={() => handleSort(col)} style={{
-      padding: "10px 12px", textAlign: "right", color: sortBy === col ? C.gold : C.textDim,
-      fontSize: "0.68rem", fontWeight: 700, cursor: "pointer", whiteSpace: "nowrap",
-      textTransform: "uppercase", letterSpacing: "0.08em", userSelect: "none",
-    }}>
-      {label} {sortBy === col ? (sortDir === "desc" ? "↓" : "↑") : "↕"}
-    </th>
-  );
+  const totalCap = market.companies.reduce((a, b) => a + b.mktcap, 0);
+  const rising = market.companies.filter(c => c.variation > 0).length;
+  const falling = market.companies.filter(c => c.variation < 0).length;
+  const avgVar = (market.companies.reduce((a, b) => a + b.variation, 0) / market.companies.length).toFixed(2);
+
+  const selected = selectedTicker ? market.companies.find(c => c.ticker === selectedTicker) : null;
+
+  const thStyle = (col: string) => ({
+    padding: "10px 14px", textAlign: "left" as const,
+    color: sortCol === col ? C.gold : C.textDim,
+    fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase" as const,
+    letterSpacing: "0.07em", cursor: "pointer", whiteSpace: "nowrap" as const,
+    userSelect: "none" as const,
+  });
 
   return (
     <div style={{ background: C.bg, minHeight: "100vh", color: C.text, fontFamily: "'Trebuchet MS', Georgia, serif" }}>
 
       {/* ── TOP BAR ── */}
-      <div style={{
-        background: C.panel, borderBottom: `1px solid ${C.border}`,
-        padding: "12px 16px", display: "flex", alignItems: "center",
-        justifyContent: "space-between", flexWrap: "wrap", gap: 8,
-      }}>
+      <div style={{ background: C.panel, borderBottom: `1px solid ${C.border}`, padding: "12px 16px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
         <div>
-          <div style={{ fontSize: "0.55rem", letterSpacing: "0.35em", color: C.gold, textTransform: "uppercase" }}>
-            Marchés Financiers Africains
-          </div>
-          <div style={{ fontSize: "1.25rem", fontWeight: 700, color: C.text, letterSpacing: "-0.02em" }}>
-            AMARA Invest
+          <div style={{ fontSize: "0.55rem", letterSpacing: "0.35em", color: C.gold, textTransform: "uppercase" }}>Marchés Boursiers Africains</div>
+          <div style={{ fontSize: "1.3rem", fontWeight: 700, color: C.text, letterSpacing: "-0.02em" }}>
+            <span style={{ color: C.gold }}>AMARA</span> Invest
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <div style={{ fontSize: "0.7rem", color: C.textDim }}>
-            {new Date().toLocaleDateString("fr-FR", { weekday: "short", year: "numeric", month: "short", day: "numeric" })}
-          </div>
-          <div style={{ width: 8, height: 8, borderRadius: "50%", background: C.green }} />
-          <span style={{ fontSize: "0.65rem", color: C.green }}>Ouvert</span>
+        <div style={{ fontSize: "0.7rem", color: C.textDim }}>
+          {new Date().toLocaleDateString("fr-FR", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}
         </div>
       </div>
 
-      {/* ── SÉLECTEUR DE MARCHÉS ── */}
-      <div style={{ background: "#0A0F1A", borderBottom: `1px solid ${C.border}`, padding: "10px 16px" }}>
-        <div style={{ fontSize: "0.6rem", color: C.textDim, marginBottom: 8, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-          Sélectionner un marché
-        </div>
-        {/* Desktop : boutons horizontaux */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {MARKETS.map(m => (
-            <button key={m.id} onClick={() => { setMarket(m.id); setSector("Tous"); setCountry("Tous"); setSearch(""); }}
-              style={{
-                padding: "8px 14px", borderRadius: 6, border: `1px solid ${market === m.id ? m.color : C.border}`,
-                background: market === m.id ? `${m.color}20` : "transparent",
-                color: market === m.id ? m.color : C.silver,
-                cursor: "pointer", fontSize: "0.72rem", fontWeight: market === m.id ? 700 : 400,
-                transition: "all 0.2s",
-                display: "flex", alignItems: "center", gap: 5,
-              }}>
-              <span style={{ fontSize: "1rem" }}>{m.flag}</span>
-              <span>{m.name}</span>
-              {market === m.id && (
-                <span style={{
-                  background: m.color, color: "#000", borderRadius: 3,
-                  padding: "1px 5px", fontSize: "0.58rem", fontWeight: 800, marginLeft: 2
-                }}>
-                  {ALL_COMPANIES[m.id]?.length}
-                </span>
-              )}
-            </button>
-          ))}
-        </div>
-        {/* Info marché actif */}
-        {currentMarket && (
-          <div style={{ marginTop: 8, fontSize: "0.65rem", color: C.textDim }}>
-            <span style={{ color: currentMarket.color, fontWeight: 700 }}>{currentMarket.fullName}</span>
-            {"  ·  "}{currentMarket.description}
-            {"  ·  Devise : "}
-            <span style={{ color: C.gold }}>{currentMarket.currency}</span>
-          </div>
-        )}
+      {/* ── MARKET SELECTOR ── */}
+      <div style={{ background: C.panel, borderBottom: `1px solid ${C.border}`, padding: "10px 16px", display: "flex", gap: 8, flexWrap: "wrap", overflowX: "auto" }}>
+        {MARKETS.map(m => (
+          <button key={m.id} onClick={() => { setActiveMarket(m.id); setSectorFilter("Tous"); setCountryFilter("Tous"); setSearch(""); setSelectedTicker(null); }}
+            style={{
+              background: activeMarket === m.id ? `${m.color}22` : "transparent",
+              border: `1px solid ${activeMarket === m.id ? m.color : C.border}`,
+              borderRadius: 8, padding: "7px 14px", cursor: "pointer",
+              color: activeMarket === m.id ? m.color : C.textDim,
+              fontWeight: activeMarket === m.id ? 700 : 400,
+              fontSize: "0.75rem", whiteSpace: "nowrap" as const,
+              display: "flex", alignItems: "center", gap: 6,
+              transition: "all 0.2s",
+            }}>
+            <span style={{ fontSize: "1rem" }}>{m.flag}</span>
+            <div style={{ textAlign: "left" as const }}>
+              <div style={{ fontWeight: 700 }}>{m.name}</div>
+              <div style={{ fontSize: "0.55rem", color: C.textDim }}>{m.region}</div>
+            </div>
+            <span style={{
+              background: activeMarket === m.id ? m.color : C.border,
+              color: activeMarket === m.id ? "#000" : C.textDim,
+              borderRadius: 10, padding: "1px 6px", fontSize: "0.6rem", fontWeight: 700
+            }}>{m.companies.length}</span>
+          </button>
+        ))}
       </div>
 
-      {/* ── KPIs ── */}
+      {/* ── MARKET KPIs ── */}
       <div style={{ display: "flex", gap: 10, padding: "12px 16px", flexWrap: "wrap", borderBottom: `1px solid ${C.border}` }}>
         {[
-          { l: "Sociétés",      v: companies.length.toString(),   c: C.blue  },
-          { l: "Cap. totale",   v: fmtCap(totalCap) + " FCFA",    c: C.gold  },
-          { l: "En hausse ▲",   v: hausse.toString(),             c: C.green },
-          { l: "En baisse ▼",   v: baisse.toString(),             c: C.red   },
-          { l: "Var. moyenne",  v: `${avgVar > 0 ? "+" : ""}${avgVar}%`, c: parseFloat(avgVar) >= 0 ? C.green : C.red },
-          { l: "Résultats",     v: filtered.length.toString(),    c: C.teal  },
-        ].map((k, i) => (
-          <div key={i} style={{
-            background: C.panel, border: `1px solid ${C.border}`, borderLeft: `3px solid ${k.c}`,
-            borderRadius: 6, padding: "8px 12px", flex: "1 1 100px", minWidth: 90,
-          }}>
+          { l: "Marché actif", v: market.fullName, c: market.color },
+          { l: "Capitalisaton totale", v: formatCap(totalCap, market.currency), c: C.gold },
+          { l: "Sociétés listées", v: `${market.companies.length}`, c: C.blue },
+          { l: "En hausse", v: `${rising}`, c: C.green },
+          { l: "En baisse", v: `${falling}`, c: C.red },
+          { l: "Variation moyenne", v: `${Number(avgVar) >= 0 ? "+" : ""}${avgVar}%`, c: Number(avgVar) >= 0 ? C.green : C.red },
+        ].map(k => (
+          <div key={k.l} style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 6, padding: "8px 14px", flex: "1 1 130px" }}>
             <div style={{ fontSize: "0.58rem", color: C.textDim, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>{k.l}</div>
-            <div style={{ fontSize: "1rem", fontWeight: 700, color: k.c }}>{k.v}</div>
+            <div style={{ fontSize: "0.95rem", fontWeight: 700, color: k.c, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{k.v}</div>
           </div>
         ))}
       </div>
 
-      {/* ── FILTRES ── */}
-      <div style={{ padding: "12px 16px", borderBottom: `1px solid ${C.border}`, display: "flex", flexDirection: "column", gap: 10 }}>
-
-        {/* Recherche */}
+      {/* ── FILTERS ── */}
+      <div style={{ padding: "10px 16px", display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", borderBottom: `1px solid ${C.border}` }}>
+        {/* Search */}
         <input
-          value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="🔍 Rechercher ticker ou société..."
-          style={{
-            background: C.panel, border: `1px solid ${C.border}`, borderRadius: 6,
-            color: C.text, padding: "8px 12px", fontSize: "0.8rem", width: "100%",
-            boxSizing: "border-box", outline: "none",
-          }}
+          placeholder="🔍 Rechercher..."
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          style={{ padding: "7px 12px", borderRadius: 6, border: `1px solid ${C.border}`, background: C.panel, color: C.text, fontSize: "0.75rem", width: 180, outline: "none" }}
         />
 
-        {/* Secteur */}
-        <div>
-          <div style={{ fontSize: "0.6rem", color: C.textDim, marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.1em" }}>Secteur</div>
-          <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-            {sectors.map(s => (
-              <button key={s} onClick={() => setSector(s)} style={{
-                padding: "5px 12px", borderRadius: 20, border: "none", cursor: "pointer", fontSize: "0.7rem",
-                background: sector === s ? (SECTOR_COLORS[s] || C.gold) : C.panel,
-                color: "white", fontWeight: sector === s ? 700 : 400,
-                borderLeft: sector !== s && SECTOR_COLORS[s] ? `3px solid ${SECTOR_COLORS[s]}` : "none",
-              }}>
-                {s}
-              </button>
-            ))}
-          </div>
+        {/* Sector filter */}
+        <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+          <span style={{ fontSize: "0.62rem", color: C.textDim, alignSelf: "center", marginRight: 2 }}>SECTEUR</span>
+          {sectors.map(s => (
+            <button key={s} onClick={() => setSectorFilter(s)} style={{
+              padding: "5px 10px", borderRadius: 6, border: `1px solid ${sectorFilter === s ? market.color : C.border}`,
+              background: sectorFilter === s ? `${market.color}22` : "transparent",
+              color: sectorFilter === s ? market.color : C.textDim,
+              fontSize: "0.68rem", cursor: "pointer", fontWeight: sectorFilter === s ? 700 : 400,
+              transition: "all 0.15s", whiteSpace: "nowrap" as const,
+            }}>{s}</button>
+          ))}
         </div>
 
-        {/* Pays */}
-        {countries.length > 2 && (
-          <div>
-            <div style={{ fontSize: "0.6rem", color: C.textDim, marginBottom: 5, textTransform: "uppercase", letterSpacing: "0.1em" }}>Pays</div>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {countries.map(p => (
-                <button key={p} onClick={() => setCountry(p)} style={{
-                  padding: "5px 12px", borderRadius: 20, border: `1px solid ${country === p ? C.purple : C.border}`,
-                  cursor: "pointer", fontSize: "0.7rem",
-                  background: country === p ? `${C.purple}30` : C.panel,
-                  color: country === p ? C.purple : C.silver, fontWeight: country === p ? 700 : 400,
-                }}>
-                  {FLAGS[p] || ""} {p}
-                </button>
-              ))}
-            </div>
+        {/* Country filter — only for BRVM */}
+        {showCountryFilter && (
+          <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
+            <span style={{ fontSize: "0.62rem", color: C.textDim, alignSelf: "center", marginRight: 2 }}>PAYS</span>
+            {countries.map(c => (
+              <button key={c} onClick={() => setCountryFilter(c)} style={{
+                padding: "5px 10px", borderRadius: 6, border: `1px solid ${countryFilter === c ? C.teal : C.border}`,
+                background: countryFilter === c ? `${C.teal}22` : "transparent",
+                color: countryFilter === c ? C.teal : C.textDim,
+                fontSize: "0.68rem", cursor: "pointer", fontWeight: countryFilter === c ? 700 : 400,
+                transition: "all 0.15s", whiteSpace: "nowrap" as const,
+              }}>{c}</button>
+            ))}
           </div>
         )}
 
         {/* Reset */}
-        {(search || sector !== "Tous" || country !== "Tous") && (
-          <button onClick={() => { setSearch(""); setSector("Tous"); setCountry("Tous"); }}
-            style={{
-              alignSelf: "flex-start", padding: "6px 14px", borderRadius: 6,
-              border: `1px solid ${C.border}`, background: "transparent",
-              color: C.textDim, cursor: "pointer", fontSize: "0.7rem",
-            }}>
-            ✕ Réinitialiser les filtres
-          </button>
+        {(sectorFilter !== "Tous" || countryFilter !== "Tous" || search) && (
+          <button onClick={() => { setSectorFilter("Tous"); setCountryFilter("Tous"); setSearch(""); }} style={{
+            padding: "5px 10px", borderRadius: 6, border: `1px solid ${C.red}`,
+            background: "transparent", color: C.red, fontSize: "0.68rem", cursor: "pointer",
+          }}>✕ Reset</button>
         )}
+
+        <span style={{ marginLeft: "auto", fontSize: "0.68rem", color: C.textDim }}>
+          {filtered.length} résultat{filtered.length > 1 ? "s" : ""}
+        </span>
       </div>
 
-      {/* ── TABLEAU ── */}
-      <div style={{ overflowX: "auto", padding: "0 0 60px" }}>
-        <table style={{ width: "100%", borderCollapse: "collapse", minWidth: 680 }}>
-          <thead>
-            <tr style={{ background: "#0A0F1A", position: "sticky", top: 0, zIndex: 10 }}>
-              <th style={{ padding: "10px 16px", textAlign: "left", color: C.textDim, fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Ticker</th>
-              <th style={{ padding: "10px 12px", textAlign: "left", color: C.textDim, fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Société</th>
-              <th style={{ padding: "10px 12px", textAlign: "left", color: C.textDim, fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Secteur</th>
-              <SortTh col="prix"      label="Prix" />
-              <SortTh col="variation" label="Var. %" />
-              <SortTh col="volume"    label="Volume" />
-              <SortTh col="cap"       label="Cap. Mds" />
-              <th style={{ padding: "10px 12px", textAlign: "center", color: C.textDim, fontSize: "0.68rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em" }}>Signal</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((c, i) => {
-              const sig = getSignal(c.variation, c.per);
-              return (
-                <tr key={c.ticker}
-                  style={{
-                    borderBottom: `1px solid ${C.border}`,
-                    background: i % 2 === 0 ? "#0A0F1A" : "transparent",
-                    transition: "background 0.15s",
-                  }}
-                  onMouseEnter={e => e.currentTarget.style.background = "#1C2333"}
-                  onMouseLeave={e => e.currentTarget.style.background = i % 2 === 0 ? "#0A0F1A" : "transparent"}
-                >
-                  <td style={{ padding: "11px 16px" }}>
-                    <span style={{
-                      color: c.color, fontWeight: 800, fontSize: "0.78rem",
-                      background: `${c.color}18`, padding: "2px 7px", borderRadius: 4,
-                    }}>{c.ticker}</span>
-                  </td>
-                  <td style={{ padding: "11px 12px" }}>
-                    <div style={{ fontSize: "0.75rem", fontWeight: 600, color: C.text }}>{c.name}</div>
-                    <div style={{ fontSize: "0.62rem", color: C.textDim, marginTop: 1 }}>
-                      {FLAGS[c.country] || ""} {c.country}
-                    </div>
-                  </td>
-                  <td style={{ padding: "11px 12px" }}>
-                    <span style={{
-                      background: `${SECTOR_COLORS[c.sector] || C.border}25`,
-                      color: SECTOR_COLORS[c.sector] || C.silver,
-                      border: `1px solid ${SECTOR_COLORS[c.sector] || C.border}50`,
-                      padding: "3px 9px", borderRadius: 12, fontSize: "0.65rem", fontWeight: 600,
-                    }}>{c.sector}</span>
-                  </td>
-                  <td style={{ padding: "11px 12px", textAlign: "right", fontWeight: 700, fontSize: "0.78rem", color: C.text, fontVariantNumeric: "tabular-nums" }}>
-                    {c.prix.toLocaleString("fr-FR")}
-                  </td>
-                  <td style={{ padding: "11px 12px", textAlign: "right", fontWeight: 700, fontSize: "0.78rem", color: c.variation > 0 ? C.green : c.variation < 0 ? C.red : C.textDim }}>
-                    {c.variation > 0 ? "▲" : c.variation < 0 ? "▼" : "—"} {Math.abs(c.variation)}%
-                  </td>
-                  <td style={{ padding: "11px 12px", textAlign: "right", fontSize: "0.72rem", color: C.silver, fontVariantNumeric: "tabular-nums" }}>
-                    {c.volume.toLocaleString("fr-FR")}
-                  </td>
-                  <td style={{ padding: "11px 12px", textAlign: "right", fontSize: "0.72rem", color: C.gold, fontVariantNumeric: "tabular-nums" }}>
-                    {fmtCap(c.cap)}
-                  </td>
-                  <td style={{ padding: "11px 12px", textAlign: "center" }}>
-                    <span style={{
-                      background: `${sig.color}22`, color: sig.color,
-                      border: `1px solid ${sig.color}55`,
-                      padding: "3px 8px", borderRadius: 4, fontSize: "0.6rem", fontWeight: 800,
-                      letterSpacing: "0.04em", whiteSpace: "nowrap",
-                    }}>{sig.label}</span>
-                  </td>
-                </tr>
-              );
-            })}
-            {filtered.length === 0 && (
-              <tr>
-                <td colSpan={8} style={{ padding: "40px", textAlign: "center", color: C.textDim, fontSize: "0.8rem" }}>
-                  Aucun résultat pour ces filtres.
-                </td>
+      {/* ── TABLE ── */}
+      <div style={{ padding: "12px 16px", overflowX: "auto" }}>
+        <div style={{ background: C.panel, border: `1px solid ${C.border}`, borderRadius: 10, overflow: "hidden", minWidth: 700 }}>
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: C.bg }}>
+                <th style={{ ...thStyle(""), cursor: "default" }}>Titre</th>
+                <th style={{ ...thStyle("") }}>Société</th>
+                {showCountryFilter && <th style={{ ...thStyle("") }}>Pays</th>}
+                <th style={{ ...thStyle("") }}>Secteur</th>
+                <th onClick={() => handleSort("price")} style={thStyle("price")}>
+                  Prix {sortCol === "price" ? (sortAsc ? "↑" : "↓") : "↕"}
+                </th>
+                <th onClick={() => handleSort("variation")} style={thStyle("variation")}>
+                  Var. {sortCol === "variation" ? (sortAsc ? "↑" : "↓") : "↕"}
+                </th>
+                <th onClick={() => handleSort("volume")} style={thStyle("volume")}>
+                  Volume {sortCol === "volume" ? (sortAsc ? "↑" : "↓") : "↕"}
+                </th>
+                <th onClick={() => handleSort("mktcap")} style={thStyle("mktcap")}>
+                  Cap. {sortCol === "mktcap" ? (sortAsc ? "↑" : "↓") : "↕"}
+                </th>
+                <th onClick={() => handleSort("per")} style={thStyle("per")}>
+                  PER {sortCol === "per" ? (sortAsc ? "↑" : "↓") : "↕"}
+                </th>
+                <th style={{ ...thStyle(""), cursor: "default" }}>Signal</th>
               </tr>
-            )}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filtered.map((co, i) => {
+                const sig = getSignal(co.per, co.variation);
+                const isSelected = selectedTicker === co.ticker;
+                return (
+                  <tr key={co.ticker}
+                    onClick={() => setSelectedTicker(isSelected ? null : co.ticker)}
+                    style={{
+                      borderTop: `1px solid ${C.border}`,
+                      background: isSelected ? "#1C233388" : i % 2 === 0 ? "transparent" : "#0D111722",
+                      cursor: "pointer", transition: "background 0.15s",
+                      borderLeft: isSelected ? `3px solid ${co.color}` : `3px solid transparent`,
+                    }}
+                    onMouseEnter={e => { if (!isSelected) (e.currentTarget as HTMLTableRowElement).style.background = "#1C233355"; }}
+                    onMouseLeave={e => { if (!isSelected) (e.currentTarget as HTMLTableRowElement).style.background = i % 2 === 0 ? "transparent" : "#0D111722"; }}>
+                    <td style={{ padding: "11px 14px", fontWeight: 700, color: co.color, fontSize: "0.8rem" }}>
+                      {co.flag} {co.ticker}
+                    </td>
+                    <td style={{ padding: "11px 14px", fontSize: "0.78rem" }}>{co.name}</td>
+                    {showCountryFilter && <td style={{ padding: "11px 14px", fontSize: "0.73rem", color: C.textDim }}>{co.country}</td>}
+                    <td style={{ padding: "11px 14px" }}>
+                      <span style={{ background: "#1C2333", border: `1px solid ${C.border}`, padding: "3px 8px", borderRadius: 20, fontSize: "0.62rem", color: C.silver }}>
+                        {co.sector}
+                      </span>
+                    </td>
+                    <td style={{ padding: "11px 14px", fontWeight: 700, fontSize: "0.8rem" }}>
+                      {co.price.toLocaleString("fr-FR")} <span style={{ fontSize: "0.6rem", color: C.textDim }}>{co.currency}</span>
+                    </td>
+                    <td style={{ padding: "11px 14px", fontWeight: 700, fontSize: "0.78rem", color: co.variation > 0 ? C.green : co.variation < 0 ? C.red : C.textDim }}>
+                      {co.variation > 0 ? "▲" : co.variation < 0 ? "▼" : "—"} {Math.abs(co.variation)}%
+                    </td>
+                    <td style={{ padding: "11px 14px", fontSize: "0.73rem", color: C.textDim }}>
+                      {co.volume.toLocaleString("fr-FR")}
+                    </td>
+                    <td style={{ padding: "11px 14px", fontSize: "0.73rem", color: C.silver }}>
+                      {co.mktcap.toLocaleString("fr-FR")} Mds
+                    </td>
+                    <td style={{ padding: "11px 14px", fontSize: "0.73rem", color: co.per < 10 ? C.green : co.per < 15 ? C.gold : C.textDim }}>
+                      {co.per}x
+                    </td>
+                    <td style={{ padding: "11px 14px" }}>
+                      <span style={{ background: `${sig.color}22`, color: sig.color, border: `1px solid ${sig.color}55`, padding: "3px 8px", borderRadius: 20, fontSize: "0.62rem", fontWeight: 700, whiteSpace: "nowrap" as const }}>
+                        {sig.label}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      {/* ── DETAIL PANEL ── */}
+      {selected && (
+        <div style={{ margin: "0 16px 16px", background: C.panel, border: `1px solid ${selected.color}44`, borderRadius: 10, padding: 16, borderLeft: `4px solid ${selected.color}` }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: 10, marginBottom: 12 }}>
+            <div>
+              <div style={{ fontSize: "1.1rem", fontWeight: 700, color: selected.color }}>{selected.flag} {selected.ticker} — {selected.name}</div>
+              <div style={{ fontSize: "0.7rem", color: C.textDim, marginTop: 2 }}>{selected.country} · {selected.sector} · {market.currency}</div>
+            </div>
+            <button onClick={() => setSelectedTicker(null)} style={{ background: "transparent", border: `1px solid ${C.border}`, color: C.textDim, borderRadius: 6, padding: "4px 10px", cursor: "pointer", fontSize: "0.7rem" }}>✕ Fermer</button>
+          </div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {[
+              { l: "Prix actuel", v: `${selected.price.toLocaleString("fr-FR")} ${selected.currency}`, c: C.text },
+              { l: "Variation", v: `${selected.variation > 0 ? "▲ +" : selected.variation < 0 ? "▼ " : ""}${selected.variation}%`, c: selected.variation > 0 ? C.green : selected.variation < 0 ? C.red : C.textDim },
+              { l: "Volume échangé", v: selected.volume.toLocaleString("fr-FR"), c: C.silver },
+              { l: "Capitalisation", v: `${selected.mktcap.toLocaleString("fr-FR")} Mds ${selected.currency}`, c: C.gold },
+              { l: "PER", v: `${selected.per}x`, c: selected.per < 10 ? C.green : selected.per < 15 ? C.gold : C.textDim },
+              { l: "Signal", v: getSignal(selected.per, selected.variation).label, c: getSignal(selected.per, selected.variation).color },
+              { l: "Bourse", v: market.name, c: market.color },
+            ].map(k => (
+              <div key={k.l} style={{ background: C.bg, border: `1px solid ${C.border}`, borderRadius: 6, padding: "8px 14px", flex: "1 1 120px", minWidth: 100 }}>
+                <div style={{ fontSize: "0.58rem", color: C.textDim, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 3 }}>{k.l}</div>
+                <div style={{ fontSize: "0.88rem", fontWeight: 700, color: k.c }}>{k.v}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ── FOOTER ── */}
-      <div style={{
-        textAlign: "center", padding: "10px 20px", fontSize: "0.58rem",
-        color: C.textDim, borderTop: `1px solid ${C.border}`, background: C.panel,
-        position: "fixed", bottom: 0, left: 0, right: 0,
-      }}>
-        Sources : BRVM · NSE Nigeria · GSE Ghana · NSE Kenya · JSE — ⚠️ Analyse informative uniquement. Non un conseil en investissement.
+      <div style={{ textAlign: "center", padding: "10px 16px", fontSize: "0.58rem", color: C.textDim, borderTop: `1px solid ${C.border}`, background: C.panel }}>
+        Sources : BRVM · NGX · GSE · NSE Kenya · JSE — Données à titre informatif uniquement. ⚠️ Non constitutif de conseil en investissement.
       </div>
-
     </div>
   );
 }
